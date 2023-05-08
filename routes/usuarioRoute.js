@@ -9,7 +9,6 @@ const router = express.Router();
 router.use(bodyParser.json())
 
 //criar um novo usuário
-
 router.post('/usuario', 
     body('nome').notEmpty().withMessage("Nome inválido"), 
     body('senha').isNumeric().isLength({ min: 6 }).withMessage("A senha deve conter apenas números e ter no mínimo 6 dígitos"),
@@ -18,7 +17,7 @@ router.post('/usuario',
         const validacao = validationResult(req).array();
         console.log(matchedData(req));
        if (validacao.length === 0) {
-            const novo = await usuarioService.criarUsuario(req.body.nome, 
+            const novo = await usuarioService.usuario.criarUsuario(req.body.nome, 
                                                            req.body.senha, 
                                                            req.body.pontos,
                                                            req.body.latitude,
@@ -27,14 +26,27 @@ router.post('/usuario',
      } else {
         res.status(401).json(validacao);
      }
-
-       
 })
 
+router.get('/usuario/:id' , 
+    async (req, res) => {
+        
+        const usuarioId = req.params.id;
+        const resposta = await usuarioService.usuario.acharUsuario(usuarioId);
+
+        if (resposta) {
+            return res.status(200).json(resposta);
+        } else {
+            return res.status(404).json({ error: 'Usuário não encontrado'});
+        }
+})
 // Validar login e senha
 
+
+
+//Login de usuário
 router.post('/usuario/login', (req, res) =>{
-    const login = usuarioController.login(req.body.username , req.body.senha); 
+    const login = usuarioService.usuario.loginUsuario(req.body.nome , req.body.senha); 
     if(login.valido){
         res.json(login);
     } else res.status(401).json(login);
@@ -60,6 +72,7 @@ router.put('/usuario/novasenha/', (req, res) => {
         res.json({resultado: 'Senha alterada com sucesso!'});
     } else res.status(400).json({resultado: 'Problemas para alterar a senha'});
 })
+
 
 module.exports = router;
 

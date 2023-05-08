@@ -10,7 +10,6 @@ const criarPremio = async (descricao, quantidade, usuarioID) => {
                                         quantidade: quantidade,
                                         pontos: usuario.pontos,
                                         usuario: usuario});
-                 
             return await premio.save();
         }
 
@@ -67,4 +66,4 @@ const deletarPremio = async(premioID) =>{
 
 
 
-module.exports.premio = {criarPremio, acharPremio, atualizarPremio, deletarPremio};
+module.exports.premio = {criarPremio};

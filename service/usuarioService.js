@@ -27,11 +27,25 @@ const criarUsuario = async (nome, senha, pontos, latitude, longitude) => {
 const acharUsuario = async (usuarioID) => {   
     try{
         const usuario = await Usuario.findById(usuarioID).exec();
-
         return usuario;
+
     }catch (error){
+        
         console.log(error);
         console.log("Usuario não encontrado!!");
+    }
+}
+
+const loginUsuario = (nome, senha) => {
+    console.log(usuarios)
+    if (usuarios[nome]) {
+        const valido = bcryptjs.compareSync(senha,usuarios[nome].senha)
+        if(valido){
+            const token = jsonwebtoken.sign({nome: nome}, process.env.SEGREDO)
+            return {valido : true, token:token};
+        }else return{valido :false};
+    } else {
+        return false;
     }
 }
 
@@ -92,7 +106,6 @@ const atualizarPontos = async (usuario, pontos) => {
 }
 
 
-
-module.exports.criarUsuario = criarUsuario;
+module.exports.usuario = {criarUsuario, acharUsuario, loginUsuario};
 //module.exports.login = login;
 //module.exports.alterarSenha = alterarSenha;

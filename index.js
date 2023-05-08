@@ -1,13 +1,14 @@
 const express = require ('express');
 const mongoose = require ('mongoose');
 const usuarioRoute = require('./routes/usuarioRoute.js');
+const premioRoute = require('./routes/premioRoute.js');
 //const reciclagemRoute = require('./routes/reciclagemRoute.js');
 
 const app = express();
 
 //habilita a rota para usuários
 app.use(usuarioRoute);
-
+app.use(premioRoute);
 //habilita a rota para reciclagem
 //app.use(reciclagemRoute);
 
