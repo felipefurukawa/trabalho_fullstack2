@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.use(bodyParser.json())
 
-//criar um novo usuário
+//Criar um novo usuário
 router.post('/usuario', 
     body('nome').notEmpty().withMessage("Nome inválido"), 
     body('senha').isNumeric().isLength({ min: 6 }).withMessage("A senha deve conter apenas números e ter no mínimo 6 dígitos"),
@@ -28,13 +28,12 @@ router.post('/usuario',
      }
 })
 
+//Get Usuário por ID
 router.get('/usuario/:id', 
     async (req, res) => {
         const usuarioID = req.params._id;
         res.json({resultado: 'Usuário encontrado!!!', usuario: usuarioService.usuario.acharUsuario(usuarioID)});
 });
-// Validar login e senha
-
 
 
 //Login de usuário
@@ -56,26 +55,37 @@ router.delete('/usuario/:id', (req, res) => {
     }
 })
 
+//Alterar senha do usuário
 router.put('/usuario/novasenha/', (req, res) => {
-
     const authHeader = req.headers["authorization"];
     console.log(authHeader);
     const token = authHeader.split(" ")[1]
     let decodificado;
     try {
-         decodificado = jsonwebtoken.verify(token, process.env.SEGREDO);
-    } catch (err){
-        res.status(400).json({resultado: 'Problemas para alterar a senha'});
-        return;
-    }
-
-    const novasenha = req.body.senha;
-    console.log(decodificado)
-    
-    if (usuarioController.alterarSenha(decodificado.username, novasenha)) {
-        res.json({resultado: 'Senha alterada com sucesso!'});
-    } else res.status(400).json({resultado: 'Problemas para alterar a senha'});
+        decodificado = jsonwebtoken.verify(token, process.env.SEGREDO);
+   } catch (err){
+       res.status(400).json({resultado: 'Problemas para alterar a senha'});
+       return;
+   }
+   const novasenha = req.body.senha;
+   console.log(decodificado)
+   
+   if (usuarioService.usuario.alterarSenha(decodificado.nome, novasenha)) {
+       res.json({resultado: 'Senha alterada com sucesso!'});
+   } else res.status(400).json({resultado: 'Problemas para alterar a senha'});
 })
+
+//Atualizar usuário.
+router.put('/usuario/:id', (req, res) => {
+    const atualizar = usuarioService.usuario.atualizarUsuario(req.body.nome, 
+                                                              req.body.pontos,
+                                                              req.body.latitude,
+                                                              req.body.longitude); 
+    if(atualizar){
+        res.json({resultado: 'Usuário alterado com sucesso!'});
+    } else res.status(404).json({resultado: 'Usuário não encontrado.'});
+})
+
 
 
 module.exports = router;

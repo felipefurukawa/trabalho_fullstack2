@@ -8,8 +8,7 @@ const router = express.Router();
 
 router.use(bodyParser.json())
 
-//criar um novo usuário
-
+//criar um novo premio
 router.post('/premio', 
     async (req, res) => {
         const validacao = validationResult(req).array();
@@ -26,6 +25,13 @@ router.post('/premio',
        
 })
 
+
+//Get premio por ID
+router.get('/premio/:id', 
+    async (req, res) => {
+        const premioID = req.params._id;
+        res.json({resultado: 'Premio encontrado!!!', premio: premioService.premio.acharPremio(premioID)});
+});
 
 
 module.exports = router;

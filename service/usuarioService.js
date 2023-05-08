@@ -27,7 +27,7 @@ const criarUsuario = async (nome, senha, pontos, latitude, longitude) => {
 const acharUsuario = async (usuarioID) => {   
     try{
         const usuario = await Usuario.findById(usuarioID).exec();
-        return usuario;
+        return usuario.json;
 
     }catch (error){
         
@@ -45,6 +45,16 @@ const loginUsuario = (nome, senha) => {
             return {valido : true, token:token};
         }else return{valido :false};
     } else {
+        return false;
+    }
+}
+
+const alterarSenha = (nome, novaSenha) => {
+    console.log(nome, usuarios[nome])
+    if(usuarios[nome]) {
+        usuarios[nome].senha = novaSenha;
+        return true;
+    }else{
         return false;
     }
 }
@@ -106,6 +116,6 @@ const atualizarPontos = async (usuario, pontos) => {
 }
 
 
-module.exports.usuario = {criarUsuario, acharUsuario, loginUsuario, deletarUsuario};
+module.exports.usuario = {criarUsuario, acharUsuario, loginUsuario, deletarUsuario, alterarSenha, atualizarUsuario};
 //module.exports.login = login;
 //module.exports.alterarSenha = alterarSenha;
