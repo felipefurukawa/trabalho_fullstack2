@@ -28,6 +28,8 @@ router.post('/usuario',
      }
 })
 
+
+//GET usuário pelo ID ---- Não funcionando
 router.get('/usuario/:id' , 
     async (req, res) => {
         
@@ -50,6 +52,17 @@ router.post('/usuario/login', (req, res) =>{
     if(login.valido){
         res.json(login);
     } else res.status(401).json(login);
+})
+
+//Delete de usuário
+router.delete('/usuario/:id', (req, res) => {
+    const usuarioID = req.params.id;
+    const validacao = usuarioService.usuario.deletarUsuario(usuarioID);
+    if (!validacao) {
+        res.json({ message: 'Usuário deletado com sucesso'});
+    } else {
+        return res.status(404).json({ error: 'User not found' });
+    }
 })
 
 router.put('/usuario/novasenha/', (req, res) => {

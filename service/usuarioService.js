@@ -79,7 +79,7 @@ const deletarUsuario = async(usuarioID) =>{
           console.log(usuario)
 
       } else {
-          console.log("id não existe")
+          console.log("ID não existe")
       }
 }
 
@@ -106,6 +106,6 @@ const atualizarPontos = async (usuario, pontos) => {
 }
 
 
-module.exports.usuario = {criarUsuario, acharUsuario, loginUsuario};
+module.exports.usuario = {criarUsuario, acharUsuario, loginUsuario, deletarUsuario};
 //module.exports.login = login;
 //module.exports.alterarSenha = alterarSenha;
