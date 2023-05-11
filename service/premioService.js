@@ -54,16 +54,15 @@ const deletarPremio = async(premioID) =>{
     const verificacao = await Premio.findById(premioID);
     if(verificacao){
         const premio = await Premio.deleteOne({_id: premioID});
-        
-        return "Premio deletado!!";
+        console.log(premio)
 
-      } else {
-          console.log("id não existe")
-      }
+    } else {
+        console.log("ID não existe")
+    }
 }
 
 
 
 
 
-module.exports.premio = {criarPremio, acharPremio};
+module.exports.premio = {criarPremio, acharPremio, deletarPremio};

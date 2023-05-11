@@ -33,5 +33,16 @@ router.get('/premio/:id',
         res.json({resultado: 'Premio encontrado!!!', premio: premioService.premio.acharPremio(premioID)});
 });
 
+//Delete de premio
+router.delete('/premio/:id', (req, res) => {
+    const premioID = req.params.id;
+    const validacao = premioService.premio.deletarPremio(premioID);
+    if (!validacao) {
+        return res.status(404).json({ error: 'Prêmio não encontrado' });
+    } else {
+        res.status(200).json({ message: 'Premio deletado com sucesso'});
+    }
+})
+
 
 module.exports = router;
