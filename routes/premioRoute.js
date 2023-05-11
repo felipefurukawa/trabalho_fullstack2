@@ -44,5 +44,15 @@ router.delete('/premio/:id', (req, res) => {
     }
 })
 
+//Atualizar premio.
+router.put('/premio/:id', (req, res) => {
+    const atualizar = premioService.premio.atualizarPremio(req.body.descricao, 
+                                                           req.body.quantidade,
+                                                           req.body.usuarioId); 
+    if(atualizar){
+        res.status(200).json({resultado: 'Usuário alterado com sucesso!'});
+    } else res.status(404).json({resultado: 'Usuário não encontrado.'});
+})
+
 
 module.exports = router;

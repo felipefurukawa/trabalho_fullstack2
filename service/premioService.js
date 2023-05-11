@@ -65,4 +65,4 @@ const deletarPremio = async(premioID) =>{
 
 
 
-module.exports.premio = {criarPremio, acharPremio, deletarPremio};
+module.exports.premio = {criarPremio, acharPremio, deletarPremio, atualizarPremio};
