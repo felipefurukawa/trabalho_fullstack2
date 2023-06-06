@@ -25,27 +25,15 @@ router.post('/premio',
        
 })
 
+//Get premio por id
+router.get('/premio/:id', async (req, res) => {
 
-//Get premio por ID
-router.get('/premio/:id', 
-    async (req, res) => {
-        
-        const premioID = req.params._id;
-        res.json({resultado: 'Premio encontrado!!!', premio: premioService.premio.acharPremio(premioID)});
-});
-
-//Get listagem de todos os prêmios no banco
-router.get('/premio', 
-    async (req, res) => {
-
-        
-
-            if (validacao) {
-                res.status(200).json({premios: premioService.premio.listarPremios, premios: validacao});
-            } else {
-                return res.status(404).json({ error: 'Deu ruim pra listar os prêmios' });
-            }
-            
+    const premio = await premioService.premio.acharPremio(req.params.id);
+    if(premio){
+        res.json({resultado: 'Premio encontrado!!!', premio: premio});
+    } else{
+        res.status(404).json({ resultado: 'ERRO!! Premio não encontrado!' });
+    }      
 });
 
 //Delete de premio
@@ -60,14 +48,20 @@ router.delete('/premio/:id', (req, res) => {
 })
 
 //Atualizar premio.
-router.put('/premio/:id', (req, res) => {
-    const atualizar = premioService.premio.atualizarPremio(req.body.descricao, 
-                                                           req.body.quantidade,
-                                                           req.body.usuarioId); 
-    if(atualizar){
-        res.status(200).json({resultado: 'Usuário alterado com sucesso!'});
-    } else res.status(404).json({resultado: 'Usuário não encontrado.'});
+router.put('/premio/:id', async(req, res) => {
+
+    const validacao = validationResult(req).array();
+        if (validacao.length === 0) {
+            const atualizar = await premioService.premio.atualizarPremio(
+                                                                    req.params.id,
+                                                                    req.body.descricao, 
+                                                                    req.body.pontos,
+                                                                    req.body.quantidade); 
+            res.json({resultado: 'Premio atualizado!!!', premio: atualizar});
+        } else res.status(401).json({resultado: 'Não foi possível atualizar o premio.'});
 })
+
+
 
 
 module.exports = router;

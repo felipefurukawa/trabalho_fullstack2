@@ -17,11 +17,11 @@ const criarPremio = async (descricao, quantidade, usuarioID) => {
 }
 
 const acharPremio = async (premioID) => {   
+
     try{
         const premio = await Premio.findById(premioID).exec();
-
         return premio;
-    }catch (error){
+    } catch (error){
         console.log(error);
         console.log("Premio não encontrado!!");
     }
@@ -38,21 +38,16 @@ const listarPremios = async () => {
     }
 }
 
-const atualizarPremio = async(premioID, descricao, quantidade, usuarioID) =>{
-
+const atualizarPremio = async(premioID, descricao, quantidade, pontos) =>{
     try {
         const premio = await Premio.findById(premioID).exec();
-        const usuario = await Usuario.findById(usuarioID).exec();
-        if (premio && usuario){
-                const premio = await Premio.updateOne({_id: premioID}, 
+        if (premio){
+                const premio = await Premio.updateOne(  {_id: premioID}, 
                                                         {$set: 
                                                         {descricao: descricao,
-                                                        quantidade: quantidade, 
-                                                        pontos: usuario.pontos, 
-                                                        usuario: usuario}});
-
-
-                return "Premio atualizado!";
+                                                        pontos: pontos,
+                                                        quantidade: quantidade}});
+                return premio;
             }
     } catch (error) {
 
