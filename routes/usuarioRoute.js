@@ -29,10 +29,13 @@ router.post('/usuario',
 })
 
 //Get Usuário por ID
-router.get('/usuario/:id', 
-    async (req, res) => {
-        const usuarioID = req.params._id;
-        res.json({resultado: 'Usuário encontrado!!!', usuario: usuarioService.usuario.acharUsuario(usuarioID)});
+router.get('/usuario/:id', async (req, res) => {
+        const usuario = await usuarioService.usuario.acharUsuario(req.params.id);
+        if(usuario){
+            res.json({resultado: 'Usuário encontrado!!!', usuario: usuario});
+        } else{
+            res.status(404).json({ resultado: 'ERRO!! Usuário não encontrado!' });
+        }
 });
 
 

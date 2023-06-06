@@ -27,7 +27,7 @@ const criarUsuario = async (nome, senha, pontos, latitude, longitude) => {
 const acharUsuario = async (usuarioID) => {   
     try{
         const usuario = await Usuario.findById(usuarioID).exec();
-        return usuario.json;
+        return usuario;
 
     }catch (error){
         
