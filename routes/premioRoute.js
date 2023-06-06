@@ -61,6 +61,16 @@ router.put('/premio/:id', async(req, res) => {
         } else res.status(401).json({resultado: 'Não foi possível atualizar o premio.'});
 })
 
+//Get all premios.
+router.get('/premio', async(req, res) => {
+
+    const premios = await premioService.premio.listarPremios();
+    if(premios){
+        res.json({resultado: 'Premios encontrados.', premios: premios});
+    } else{
+        res.status(404).json({ resultado: 'Não há premios cadastrados.' });
+    }
+})
 
 
 

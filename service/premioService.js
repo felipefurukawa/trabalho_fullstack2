@@ -29,9 +29,8 @@ const acharPremio = async (premioID) => {
 
 const listarPremios = async () => {   
     try{
-        const premios = await Premio.find().toArray();
-
-        return premios;
+        const premio = await Premio.find().exec();
+        return premio;
     }catch (error){
         console.log(error);
         console.log("Não foi possível listar os premios");
