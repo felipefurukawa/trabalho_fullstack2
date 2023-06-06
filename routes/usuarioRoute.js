@@ -36,6 +36,7 @@ router.get('/usuario/:id',
 });
 
 
+
 //Login de usuário
 router.post('/usuario/login', (req, res) =>{
     const login = usuarioService.usuario.loginUsuario(req.body.nome , req.body.senha); 
@@ -49,14 +50,33 @@ router.delete('/usuario/:id', (req, res) => {
     const usuarioID = req.params.id;
     const validacao = usuarioService.usuario.deletarUsuario(usuarioID);
     if (!validacao) {
-        res.json({ message: 'Usuário deletado com sucesso'});
+        return res.status(404).json({ error: 'Usuário não encontrado' });
     } else {
-        return res.status(404).json({ error: 'User not found' });
+        res.status(200).json({ message: 'Usuário deletado com sucesso'});
     }
 })
 
+
+//Atualizar usuário.
+router.put('/usuario/:id', body('senha').isLength({min: 6}).withMessage("A senha deve ter pelo menos 6 digitos"), async(req, res) => {
+
+    const validacao = validationResult(req).array();
+        if (validacao.length === 0) {
+            const atualizar = await usuarioService.usuario.atualizarUsuario(
+                                                                    req.params.id,
+                                                                    req.body.nome, 
+                                                                    req.body.senha,
+                                                                    req.body.pontos,
+                                                                    req.body.latitude,
+                                                                    req.body.longitude); 
+            
+            res.json({resultado: 'Usuario atualizado!!!', usuario: atualizar});
+        } else res.status(401).json({resultado: 'Usuário não encontrado.'});
+})
+
+
 //Alterar senha do usuário
-router.put('/usuario/novasenha/', (req, res) => {
+/* router.put('/usuario/novasenha/', (req, res) => {
     const authHeader = req.headers["authorization"];
     console.log(authHeader);
     const token = authHeader.split(" ")[1]
@@ -67,25 +87,17 @@ router.put('/usuario/novasenha/', (req, res) => {
        res.status(400).json({resultado: 'Problemas para alterar a senha'});
        return;
    }
-   const novasenha = req.body.senha;
+   const novaSenha = req.body.senha;
    console.log(decodificado)
-   
-   if (usuarioService.usuario.alterarSenha(decodificado.nome, novasenha)) {
-       res.json({resultado: 'Senha alterada com sucesso!'});
-   } else res.status(400).json({resultado: 'Problemas para alterar a senha'});
-})
 
-//Atualizar usuário.
-router.put('/usuario/:id', (req, res) => {
-    const atualizar = usuarioService.usuario.atualizarUsuario(req.body.nome, 
-                                                              req.body.pontos,
-                                                              req.body.latitude,
-                                                              req.body.longitude); 
-    if(atualizar){
-        res.json({resultado: 'Usuário alterado com sucesso!'});
-    } else res.status(404).json({resultado: 'Usuário não encontrado.'});
-})
+   const atualizado = usuarioService.usuario.alterarSenha(decodificado.nome, novaSenha);
+   if (!atualizado) {
+        return res.status(404).json({ error: 'Usuário não encontrado' });
+    } else {
+    res.status(200).json({ message: 'Usuário alterado com sucesso'});
+}
 
+}) */
 
 
 module.exports = router;

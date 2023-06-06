@@ -27,6 +27,17 @@ const acharPremio = async (premioID) => {
     }
 }
 
+const listarPremios = async () => {   
+    try{
+        const premios = await Premio.find().toArray();
+
+        return premios;
+    }catch (error){
+        console.log(error);
+        console.log("Não foi possível listar os premios");
+    }
+}
+
 const atualizarPremio = async(premioID, descricao, quantidade, usuarioID) =>{
 
     try {
@@ -65,4 +76,4 @@ const deletarPremio = async(premioID) =>{
 
 
 
-module.exports.premio = {criarPremio, acharPremio, deletarPremio, atualizarPremio};
+module.exports.premio = {criarPremio, acharPremio, deletarPremio, atualizarPremio, listarPremios};

@@ -29,8 +29,23 @@ router.post('/premio',
 //Get premio por ID
 router.get('/premio/:id', 
     async (req, res) => {
+        
         const premioID = req.params._id;
         res.json({resultado: 'Premio encontrado!!!', premio: premioService.premio.acharPremio(premioID)});
+});
+
+//Get listagem de todos os prêmios no banco
+router.get('/premio', 
+    async (req, res) => {
+
+        
+
+            if (validacao) {
+                res.status(200).json({premios: premioService.premio.listarPremios, premios: validacao});
+            } else {
+                return res.status(404).json({ error: 'Deu ruim pra listar os prêmios' });
+            }
+            
 });
 
 //Delete de premio

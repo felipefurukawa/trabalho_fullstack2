@@ -62,8 +62,8 @@ const alterarSenha = (nome, novaSenha) => {
 const atualizarUsuario = async(usuarioID, nome, senha, pontos, latitude, longitude ) =>{
 
     try {
-        const resposta = await Usuario.findById(usuarioID);
-        if(resposta){
+        const usuario = await Usuario.findById(usuarioID).exec();
+        if(usuario){
             const usuario = await Usuario.updateOne({_id: usuarioID},
                                                    {$set:
                                                    {nome: nome,
@@ -73,7 +73,7 @@ const atualizarUsuario = async(usuarioID, nome, senha, pontos, latitude, longitu
                                                     longitude:longitude}});
 
             //console.log(resposta.nome);
-            return "atualizacao de " + resposta.nome + " realizada com sucesso!!";
+            return usuario;
      }
     } catch (error) {
 
