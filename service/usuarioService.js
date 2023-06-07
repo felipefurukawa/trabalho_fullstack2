@@ -116,6 +116,6 @@ const atualizarPontos = async (usuario, pontos) => {
 }
 
 
-module.exports.usuario = {criarUsuario, acharUsuario, loginUsuario, deletarUsuario, alterarSenha, atualizarUsuario};
+module.exports.usuario = {criarUsuario, acharUsuario, loginUsuario, deletarUsuario, alterarSenha, atualizarUsuario, atualizarPontos};
 //module.exports.login = login;
 //module.exports.alterarSenha = alterarSenha;

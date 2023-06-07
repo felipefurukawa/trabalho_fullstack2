@@ -2,7 +2,7 @@ const express = require ('express');
 const mongoose = require ('mongoose');
 const usuarioRoute = require('./routes/usuarioRoute.js');
 const premioRoute = require('./routes/premioRoute.js');
-//const reciclagemRoute = require('./routes/reciclagemRoute.js');
+const reciclagemRoute = require('./routes/reciclagemRoute.js');
 
 const app = express();
 
@@ -10,7 +10,7 @@ const app = express();
 app.use(usuarioRoute);
 app.use(premioRoute);
 //habilita a rota para reciclagem
-//app.use(reciclagemRoute);
+app.use(reciclagemRoute);
 
 app.use((req, res) => {
     res.status(404).json({msg: "Endpoint inexistente!"})

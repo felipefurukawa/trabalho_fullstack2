@@ -1,23 +1,24 @@
 const mongoose = require('mongoose');
 const Reciclagem = require('../model/reciclagemSchema');
 const Usuario = require('../model/usuarioSchema');
+const Premio = require('../model/premioSchema.js');
 const usuarioService = require('../service/usuarioService.js');
 
-const criarReciclagem = async (item, imagem, peso, pontos, usuarioID) => {
-
+const criarReciclagem = async (usuarioID, item, imagem, peso, pontos) => {
     const usuario = await Usuario.findById(usuarioID).exec();
         if(usuario) {
-            const reciclagem = new Reciclagem({item: item,
-                                                imagem: imagem,
-                                                peso: peso,
-                                                data: new Date(),
-                                                pontos: pontos,
-                                                usuario:usuario});
+            let reciclagem = new Reciclagem({usuarioID: usuarioID,
+                                             item: item,
+                                             imagem: imagem,
+                                             peso: peso,
+                                             data: new Date(),
+                                             pontos: pontos
+                                                                 });
 
-
+            usuario.reciclagem.push(reciclagem);
             usuarioService.usuario.atualizarPontos(usuario, reciclagem.pontos);
                                                 
-            return await reciclagem.save();
+            return await reciclagem;
         }
 
         throw new Error('Não foi possível criar uma reciclagem')

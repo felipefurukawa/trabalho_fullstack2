@@ -72,6 +72,18 @@ router.get('/premio', async(req, res) => {
     }
 })
 
+//Get all premios por pontos necessarios
+router.get('/premio/disponivel/:pontos', async(req, res) => {
+    const premios = await premioService.premio.acharPremiosPontos(req.params.pontos);
+    if(premios){
+        res.json({resultado: 'Premio encontrado!!!', premios: premios});
+    } else{
+        res.status(404).json({ resultado: 'ERRO!! Não existem premios com essa quantidade de pontos!' });
+    }
+});
+
+
+
 
 
 module.exports = router;

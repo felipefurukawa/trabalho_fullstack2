@@ -66,8 +66,27 @@ const deletarPremio = async(premioID) =>{
     }
 }
 
+const acharPremiosPontos = async (pontos) => {
+    try{
+        const premio = await Premio.find().exec();
+        var premioPontos = [];
+        for (var i = 0; i < premio.length; i++){
+            console.log(premio[i].pontos , pontos)
+            if(premio[i].pontos == pontos){
+                premioPontos.push(premio[i]);
+            }
+        }
+
+        return premioPontos;
+        
+    } catch (error){
+        console.log(error);
+        console.log("Premio não encontrado!!");
+    }
+}
 
 
 
 
-module.exports.premio = {criarPremio, acharPremio, deletarPremio, atualizarPremio, listarPremios};
+
+module.exports.premio = {criarPremio, acharPremio, deletarPremio, atualizarPremio, listarPremios, acharPremiosPontos};

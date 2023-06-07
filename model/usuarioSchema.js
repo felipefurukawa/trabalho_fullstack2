@@ -8,6 +8,7 @@ const usuarioSchema = mongoose.Schema({
     latitude: String,
     longitude: String,
     reciclagem: [ {type: mongoose.Types.ObjectId, ref: "Reciclagem"} ]
+    
     });
 
 const Usuario = mongoose.model('Usuario', usuarioSchema);
