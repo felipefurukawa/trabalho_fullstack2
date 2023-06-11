@@ -100,6 +100,30 @@ const visualizarPontosPeso = async () => {
     }
 }
 
+const atualizarQuantidadePremio = async (premioID) => {    
+    let session;
+    try{
+        session = await mongoose.startSession();
+        session.startTransaction();
+        var premio = await Premio.findById(premioID).exec();
+        if(premio){
+            const quantidade = premio.quantidade - 1;
+            await Premio.updateOne({_id: premioID}, {$set: {quantidade: quantidade}});
+            await session.commitTransaction();
+            return quantidade;
+        }
+    }catch (error){
+        console.log(error);
+        session.abortTransaction();
+        console.log('Reciclagem não encontrada!!');
+    }finally{
+        if(session){
+            session.endSession();
+        }
+    }
+}
 
 
-module.exports.reciclagem = {criarReciclagem, acharTodasReciclagens, visualizarPontosPeso, atualizarReciclagem, deletarReciclagem};
+
+
+module.exports.reciclagem = {criarReciclagem, acharTodasReciclagens, visualizarPontosPeso, atualizarReciclagem, deletarReciclagem, atualizarQuantidadePremio};

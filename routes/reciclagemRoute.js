@@ -37,6 +37,19 @@ router.get('/reciclagem/total/:id', async(req, res) => {
     
 });
 
+router.get('/reciclagem/premio/:id', async(req, res) => {
+    const premio = await reciclagemService.reciclagem.atualizarQuantidadePremio(req.params.id);
+    if(premio){
+        res.json({resultado: 'Premio atualizado!!!', Premio: premio});
+    } else{
+        res.status(404).json({resultado: 'ERRO!! O premio não existe!'});
+    }
+    
+});
+
+
+
+
 
 
 
