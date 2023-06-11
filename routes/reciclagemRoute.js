@@ -15,7 +15,7 @@ router.post('/reciclagem/:id', async(req, res) =>{
     res.json({resultado: 'Reciclagem Cadastrada!!!', reciclagem: novo});
 });
 
-//Get reciclagens por id do usuário
+//Get todas as reciclagens por id do usuário
 router.get('/reciclagem/:id', async (req, res) => {
 
     const reciclagens = await reciclagemService.reciclagem.acharTodasReciclagens(req.params.id);
@@ -25,6 +25,18 @@ router.get('/reciclagem/:id', async (req, res) => {
         res.status(404).json({ resultado: 'ERRO!! reciclagens não encontradas!' });
     }      
 });
+
+//Retorna o total de pontos e pesos de itens reciclados pelo usuário
+router.get('/reciclagem/total/:id', async(req, res) => {
+    const totais = await reciclagemService.reciclagem.visualizarPontosPeso();
+    if(totais){
+        res.json({resultado: 'Reciclagens encontradas!!!', Pontos: totais[0], Peso: totais[1]});
+    } else{
+        res.status(404).json({ resultado: 'ERRO!! Não existem reciclagens cadastradas!' });
+    }
+    
+});
+
 
 
 

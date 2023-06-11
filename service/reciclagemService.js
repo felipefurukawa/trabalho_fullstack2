@@ -81,6 +81,25 @@ const deletarReciclagem = async(reciclagemID) =>{
       }
 }
 
+const visualizarPontosPeso = async () => {   
+    try{
+        const reciclagem = await Reciclagem.find().exec();
+
+        var pontos = 0;
+        var peso = 0;
+        for(var i = 0; i < reciclagem.length; i++){
+            pontos += reciclagem[i].pontos;
+            peso += reciclagem[i].peso;
+        }
+        const totais = [pontos, peso];
+        return totais;
+
+    }catch (error){
+        console.log(error);
+        console.log("Reciclagem não encontrada!!");
+    }
+}
 
 
-module.exports.reciclagem = {criarReciclagem, acharTodasReciclagens, atualizarReciclagem, deletarReciclagem};
+
+module.exports.reciclagem = {criarReciclagem, acharTodasReciclagens, visualizarPontosPeso, atualizarReciclagem, deletarReciclagem};
