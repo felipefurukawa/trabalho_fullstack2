@@ -1,34 +1,43 @@
 const mongoose = require('mongoose');
-const Reciclagem = require('../model/reciclagemSchema');
-const Usuario = require('../model/usuarioSchema');
+const Reciclagem = require('../model/reciclagemSchema.js');
+const Usuario = require('../model/usuarioSchema.js');
 const Premio = require('../model/premioSchema.js');
-const usuarioService = require('../service/usuarioService.js');
+
 
 const criarReciclagem = async (usuarioID, item, imagem, peso, pontos) => {
-    const usuario = await Usuario.findById(usuarioID).exec();
-        if(usuario) {
-            let reciclagem = new Reciclagem({usuarioID: usuarioID,
-                                             item: item,
-                                             imagem: imagem,
-                                             peso: peso,
-                                             data: new Date(),
-                                             pontos: pontos
-                                                                 });
 
+    let session;
+    try {
+        session = await mongoose.startSession();
+        session.startTransaction();
+        const usuario = await Usuario.findById(usuarioID).exec();
+        if(usuario){
+            let reciclagem = new Reciclagem({usuarioID: usuarioID, item: item, imagem: imagem, peso: peso, data: new Date(), pontos: pontos});
+            reciclagem = await reciclagem.save({session: session});
             usuario.reciclagem.push(reciclagem);
-            usuarioService.usuario.atualizarPontos(usuario, reciclagem.pontos);
-                                                
-            return await reciclagem;
+            await usuario.save({session: session});
+            await session.commitTransaction();
+            return reciclagem;
         }
-
-        throw new Error('Não foi possível criar uma reciclagem')
+        
+    } catch (error) {
+        console.log(error);
+        session.abortTransaction();
+    } finally {
+        if (session) {
+            session.endSession();
+        }
+    }
+    
 }
 
-const acharReciclagem = async (reciclagemID) => {   
-    try{
-        const reciclagem = await Reciclagem.findById(reciclagemID).exec();
+const acharTodasReciclagens = async (usuarioID) => {
 
-        return reciclagem;
+    try{
+        const usuario = await Usuario.findById(usuarioID).exec();
+        const reciclagens = await Reciclagem.find({usuarioID: { $in: usuario}})
+
+        return reciclagens;
     }catch (error){
         console.log(error);
         console.log("Reciclagem não encontrada!!");
@@ -74,4 +83,4 @@ const deletarReciclagem = async(reciclagemID) =>{
 
 
 
-module.exports.reciclagem = {criarReciclagem, acharReciclagem, atualizarReciclagem, deletarReciclagem};
+module.exports.reciclagem = {criarReciclagem, acharTodasReciclagens, atualizarReciclagem, deletarReciclagem};

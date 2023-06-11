@@ -8,6 +8,7 @@ const app = express();
 
 //habilita a rota para usuários
 app.use(usuarioRoute);
+//habilita a rota para premio
 app.use(premioRoute);
 //habilita a rota para reciclagem
 app.use(reciclagemRoute);
