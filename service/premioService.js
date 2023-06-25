@@ -8,8 +8,8 @@ const criarPremio = async (descricao, quantidade, usuarioID) => {
         if(usuario) {
             const premio = new Premio({descricao: descricao,
                                         quantidade: quantidade,
-                                        pontos: usuario.pontos,
-                                        usuario: usuario});
+                                        pontos: pontos,
+                                        usuario: null});
             return await premio.save();
         }
 
@@ -85,8 +85,37 @@ const acharPremiosPontos = async (pontos) => {
     }
 }
 
+const atribuirPremio = async (premioID, usuarioID) => {   
+    try{
+        session = await mongoose.startSession();
+        session.startTransaction();
+        const premio = await Premio.findById(premioID).exec();
+        const usuario = await Usuario.findById(usuarioID).exec();
+
+
+        if(premio.usuario === null){
+            await Premio.updateOne({_id: premioID}, {$set: {usuario: usuario, quantidade: premio.quantidade - 1}});
+            await Usuario.updateOne({_id: usuarioID}, {$set: {pontos: usuario.pontos + premio.pontos}});
+            await session.commitTransaction();
+            return 200;
+        }else{   
+            premio.usuario.forEach ( async result => {
+                if(result === usuario._id){
+                    await Premio.updateOne({_id: premioID}, {$set: {usuario: usuario, quantidade: premio.quantidade - 1}});
+                    await Usuario.updateOne({_id: usuarioID}, {$set: {pontos: usuario.pontos + premio.pontos}});
+                    await session.commitTransaction();
+                    return 200;
+                }           
+            });
+        }      
+        return 400;
+    }catch (error){
+        console.log(error);
+    }
+}
 
 
 
 
-module.exports.premio = {criarPremio, acharPremio, deletarPremio, atualizarPremio, listarPremios, acharPremiosPontos};
+
+module.exports.premio = {criarPremio, acharPremio, deletarPremio, atualizarPremio, listarPremios, acharPremiosPontos, atribuirPremio};

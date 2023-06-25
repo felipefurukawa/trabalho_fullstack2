@@ -16,14 +16,13 @@ router.post('/premio',
        if (validacao.length === 0) {
             const novo = await premioService.premio.criarPremio(req.body.descricao, 
                                                                 req.body.quantidade,
+                                                                req.body.pontos,
                                                                 req.body.usuarioId
                                                         );
-            res.json({resultado: 'Premio criado!', premio: novo});
-     } else {
-        res.status(401).json(validacao);
-     }
-       
-})
+            res.json({status: 200 , premio: premio});
+
+        } else res.json({status: 400 , premio: premio});
+});
 
 //Get premio por id
 router.get('/premio/:id', async (req, res) => {
@@ -41,9 +40,9 @@ router.delete('/premio/:id', (req, res) => {
     const premioID = req.params.id;
     const validacao = premioService.premio.deletarPremio(premioID);
     if (!validacao) {
-        return res.status(404).json({ error: 'Prêmio não encontrado' });
+        res.status(404).json({ status: 400 });
     } else {
-        res.status(200).json({ message: 'Premio deletado com sucesso'});
+        res.json({status: 200, validacao: validacao});
     }
 })
 
@@ -57,7 +56,7 @@ router.put('/premio/:id', async(req, res) => {
                                                                     req.body.descricao, 
                                                                     req.body.pontos,
                                                                     req.body.quantidade); 
-            res.json({resultado: 'Premio atualizado!!!', premio: atualizar});
+            res.json({status: atualizar});
         } else res.status(401).json({resultado: 'Não foi possível atualizar o premio.'});
 })
 

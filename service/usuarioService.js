@@ -3,15 +3,41 @@ const { json } = require('body-parser');
 const jsonwebtoken = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const Usuario = require('../model/usuarioSchema.js');
+const NodeGeocoder = require('node-geocoder');
+const axios = require('axios');
+
 
 var usuarios = [];
 
-const criarUsuario = async (nome, senha, pontos, latitude, longitude) => {
+const criarUsuario = async (nome, senha) => {
+
+    const options = {
+        provider: 'openstreetmap'
+    };     
+
+    const geocoder = NodeGeocoder(options);    
+
+    const getCoordinates = async () => {
+        let latitude = 'Não informado';
+        let longitude = 'Não informado';
+
+        const response = await axios.get('http://ip-api.com/json');
+        const { lat, lon } = response.data;
+
+        const res = await geocoder.reverse({ lat, lon });
+        if (res.length > 0) {
+            latitude = lat;
+            longitude = lon;
+        };
+        return {latitude, longitude}
+    }  
+    const geo = await getCoordinates();
+
     const usuario = new Usuario({nome: nome, 
                                 senha:bcryptjs.hashSync(senha),
-                                pontos:pontos,
-                                latitude:latitude,
-                                longitude:longitude
+                                pontos:0,
+                                latitude: geo.latitude,
+                                longitude: geo.longitude
     });
         if(usuario) {
 
@@ -32,7 +58,7 @@ const acharUsuario = async (usuarioID) => {
     }catch (error){
         
         console.log(error);
-        console.log("Usuario não encontrado!!");
+        return null;
     }
 }
 
@@ -43,7 +69,7 @@ const loginUsuario = (nome, senha) => {
         if(valido){
             const token = jsonwebtoken.sign({nome: nome}, process.env.SEGREDO)
             return {valido : true, token:token};
-        }else return{valido :false};
+        }else return null;
     } else {
         return false;
     }
@@ -59,7 +85,7 @@ const alterarSenha = (nome, novaSenha) => {
     }
 }
 
-const atualizarUsuario = async(usuarioID, nome, senha, pontos, latitude, longitude ) =>{
+const atualizarUsuario = async(usuarioID, nome, senha) =>{
 
     try {
         const usuario = await Usuario.findById(usuarioID).exec();
@@ -67,10 +93,8 @@ const atualizarUsuario = async(usuarioID, nome, senha, pontos, latitude, longitu
             const usuario = await Usuario.updateOne({_id: usuarioID},
                                                    {$set:
                                                    {nome: nome,
-                                                    senha: senha,
-                                                    pontos: pontos,
-                                                    latitude: latitude,
-                                                    longitude:longitude}});
+                                                    senha: senha
+                                                    }});
 
             //console.log(resposta.nome);
             return usuario;

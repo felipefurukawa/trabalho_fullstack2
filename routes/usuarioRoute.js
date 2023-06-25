@@ -18,13 +18,11 @@ router.post('/usuario',
         console.log(matchedData(req));
        if (validacao.length === 0) {
             const novo = await usuarioService.usuario.criarUsuario(req.body.nome, 
-                                                           req.body.senha, 
-                                                           req.body.pontos,
-                                                           req.body.latitude,
-                                                           req.body.longitude);
-            res.json({resultado: 'Usuário criado!', usuario: novo});
+                                                                   req.body.senha, 
+                                                           );
+            res.json({status: 200, usuario: novo});
      } else {
-        res.status(401).json(validacao);
+        res.json({status: 400});
      }
 })
 
@@ -32,9 +30,9 @@ router.post('/usuario',
 router.get('/usuario/:id', async (req, res) => {
         const usuario = await usuarioService.usuario.acharUsuario(req.params.id);
         if(usuario){
-            res.json({resultado: 'Usuário encontrado!!!', usuario: usuario});
+            res.json({status: 200, usuario: usuario});
         } else{
-            res.status(404).json({ resultado: 'ERRO!! Usuário não encontrado!' });
+            res.status(404).json({ status: 400 });
         }
 });
 
@@ -42,10 +40,10 @@ router.get('/usuario/:id', async (req, res) => {
 
 //Login de usuário
 router.post('/usuario/login', (req, res) =>{
-    const login = usuarioService.usuario.loginUsuario(req.body.nome , req.body.senha); 
-    if(login.valido){
-        res.json(login);
-    } else res.status(401).json(login);
+    const usuario = usuarioService.usuario.loginUsuario(req.body.nome , req.body.senha); 
+    if(usuario){
+        res.json({status: 200 , usuario: usuario});
+    } else res.json({status: 400 , usuario: usuario});
 })
 
 //Delete de usuário
@@ -69,9 +67,7 @@ router.put('/usuario/:id', body('senha').isLength({min: 6}).withMessage("A senha
                                                                     req.params.id,
                                                                     req.body.nome, 
                                                                     req.body.senha,
-                                                                    req.body.pontos,
-                                                                    req.body.latitude,
-                                                                    req.body.longitude); 
+                                                                    ); 
             
             res.json({resultado: 'Usuario atualizado!!!', usuario: atualizar});
         } else res.status(401).json({resultado: 'Usuário não encontrado.'});

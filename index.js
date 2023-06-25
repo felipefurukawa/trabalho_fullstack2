@@ -3,9 +3,11 @@ const mongoose = require ('mongoose');
 const usuarioRoute = require('./routes/usuarioRoute.js');
 const premioRoute = require('./routes/premioRoute.js');
 const reciclagemRoute = require('./routes/reciclagemRoute.js');
+var cors = require("cors");
 
 const app = express();
 
+app.use(cors());
 //habilita a rota para usuários
 app.use(usuarioRoute);
 //habilita a rota para premio
@@ -20,5 +22,5 @@ app.use((req, res) => {
 const URL = "mongodb+srv://felipefurukawa:felipefurukawa@cluster0.gsx5rgs.mongodb.net/reciclagem2?retryWrites=true&w=majority";
 
 mongoose.connect(URL).then(() => {
-    app.listen(7000, () => console.log('Servidor iniciado...'))
+    app.listen(4000, () => console.log('Servidor iniciado...'))
 }).catch((err) => console.log(err));
